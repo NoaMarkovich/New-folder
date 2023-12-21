@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // const items = [];
-
   const itemsJSON = localStorage.getItem("todo");
 
-  const items = JSON.parse(itemsJSON);
+  /**
+   *  @type {string[]}
+   */
+  const items = typeof itemsJSON === "string" ? JSON.parse(itemsJSON) : [];
+
   items.forEach(addRow);
 
+  // hints what type
   /**
    * @type {HTMLInputElement}
    */
@@ -44,6 +47,17 @@ function addRow(item) {
   tr.innerHTML = `
        <td>${item.what}</td>
        <td>${item.when}</td>
-       <td>${item.who}</td>`;
+       <td>${item.who}</td>
+       <td><input type="checkbox" name="done"></td>
+       `;
+
+  /**
+   * @type {HTMLInputElement}
+   */
+  const checkbox = tr.querySelector('input[name="done"]');
+  checkbox.addEventListener("change", function () {
+    this.checked ? tr.classList.add("done") : tr.classList.remove("done");
+  });
+
   document.querySelector("tbody").appendChild(tr);
 }
