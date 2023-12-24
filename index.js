@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
       what: what.value,
       when: when.value,
       who: who.value,
+      done: false,
     };
     items.push(item);
 
@@ -40,24 +41,35 @@ document.addEventListener("DOMContentLoaded", function () {
     what.value = when.value = who.value = "";
     what.focus();
   });
+
+  function addRow(item) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+         <td>${item.what}</td>
+         <td>${item.when}</td>
+         <td>${item.who}</td>
+         <td><input type="checkbox" name="done"></td>
+         `;
+
+    /**
+     * @type {HTMLInputElement}
+     */
+    const checkbox = tr.querySelector('input[name="done"]');
+    checkbox.checked = item.done;
+    if (item.done) {
+      tr.classList.add("done");
+    }
+
+    checkbox.addEventListener("change", function () {
+      if (this.checked) {
+        tr.classList.add("done");
+      } else {
+        tr.classList.remove("done");
+      }
+      item.done = this.checked;
+      localStorage.setItem("todo", JSON.stringify(items));
+    });
+
+    document.querySelector("tbody").appendChild(tr);
+  }
 });
-
-function addRow(item) {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-       <td>${item.what}</td>
-       <td>${item.when}</td>
-       <td>${item.who}</td>
-       <td><input type="checkbox" name="done"></td>
-       `;
-
-  /**
-   * @type {HTMLInputElement}
-   */
-  const checkbox = tr.querySelector('input[name="done"]');
-  checkbox.addEventListener("change", function () {
-    this.checked ? tr.classList.add("done") : tr.classList.remove("done");
-  });
-
-  document.querySelector("tbody").appendChild(tr);
-}
